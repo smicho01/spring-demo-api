@@ -2,7 +2,7 @@
 
 # Function to emulate initialization
 initialize() {
-    echo "Initializing program..."
+    echo "Initializing dummy program..."
     sleep 1  # Simulate some delay
     echo "Initialization complete!"
 }
