@@ -1,29 +1,19 @@
 pipeline {
     agent any
     stages {
-        stage("Stage 1") {
+        stage("Build") {
             steps {
-                echo "This is stage 1"
+                sh 'mvn -B -DskipTests clean package'
             }
         }
-        stage("Stage 2") {
+        stage('Test') {
             steps {
-                echo "This is stage 2"
+                sh 'mv test'
             }
         }
-        stage("Stage 3") {
+        stage('Emulate Program') {
             steps {
-                echo "This is stage 3"
-            }
-        }
-        stage("Stage 4") {
-            steps {
-                echo "This is stage 4"
-            }
-        }
-        stage("Stage 5") {
-            steps {
-                echo "This is stage 5"
+                sh './jenkins/scripts/emulate-something.sh'
             }
         }
     }
