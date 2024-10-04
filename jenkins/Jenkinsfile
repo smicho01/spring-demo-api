@@ -10,17 +10,17 @@ pipeline {
              steps {
                 script {
                     if (env.BRANCH_NAME ==~ /^APP-\d{4,}-.*/) {
-                                        echo 'To branch zaczynająca się od APP. Robię standardowe testy !'
-                                        sh 'mvn test'
-                                    } else if(env.BRANCH_NAME ==~ /^BUG-\d{4,}-.*/) {
-                                        echo 'Panie ! Branch BUG ! Będzie więcej testów !'
-                                        sh 'mvn test'
-                                        sh 'mvn test'
-                                        echo "... i jeszcze jeden test ... done !"
-                                    } else {
-                                        echo 'Jakaś inna branch. Nie robię żadnych testów ! SKIP TESTS'
-                                    }
-                }
+                            echo 'To branch zaczynająca się od APP. Robię standardowe testy !'
+                            sh 'mvn test'
+                        } else if(env.BRANCH_NAME ==~ /^BUG-\d{4,}-.*/) {
+                            echo 'Panie ! Branch BUG ! Będzie więcej testów !'
+                            sh 'mvn test'
+                            sh 'mvn test'
+                            echo "... i jeszcze jeden test ... done !"
+                        } else {
+                            echo 'Jakaś inna branch. Nie robię żadnych testów ! SKIP TESTS'
+                        }
+                    }
              }
         }
         stage('Emulate Program') {
