@@ -6,7 +6,6 @@ import org.severinu.demoapi.api.entity.Person;
 import org.severinu.demoapi.api.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -19,7 +18,6 @@ class DemoApiApplicationTests {
     @Test
     void testGetAll_shouldReturnNotEmptyList() {
         List<Person> all = personService.getAll();
-
         Assertions.assertFalse(all.isEmpty());
     }
 
