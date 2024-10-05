@@ -6,11 +6,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MessageController.class)
@@ -36,7 +36,8 @@ class MessageControllerTest {
         // Perform a GET request to the /message endpoint
         mockMvc.perform(get("/message")
                         .param("message", "Hello World"))
-                .andExpect(status().isOk());
+                        .andExpect(status().isOk())
+                        .andExpect(content().string("Message sent"));
 
         // Verify interactions
         verify(emailSenderMock).send("Hello World");
