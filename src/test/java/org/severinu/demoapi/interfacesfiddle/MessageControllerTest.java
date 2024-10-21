@@ -1,6 +1,7 @@
 package org.severinu.demoapi.interfacesfiddle;
 
 import org.junit.jupiter.api.Test;
+import org.severinu.demoapi.api.controller.MessageController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

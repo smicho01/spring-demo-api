@@ -1,6 +1,9 @@
-package org.severinu.demoapi.interfacesfiddle;
+package org.severinu.demoapi.api.controller;
 
 import jakarta.websocket.server.PathParam;
+import org.severinu.demoapi.interfacesfiddle.EmailNotification;
+import org.severinu.demoapi.interfacesfiddle.INotificationSender;
+import org.severinu.demoapi.interfacesfiddle.SmsNotification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
