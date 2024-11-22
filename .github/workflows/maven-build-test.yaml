@@ -16,11 +16,11 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v2
 
-      - name: Set up JDK 17
+      - name: Set up JDK 17 (Temurin)
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'adoptopenjdk'  # Using 'adoptopenjdk' for compatibility
+          distribution: 'temurin'  # Use 'temurin' for the latest OpenJDK build
           cache: 'maven'
 
       - name: Cache Maven dependencies
