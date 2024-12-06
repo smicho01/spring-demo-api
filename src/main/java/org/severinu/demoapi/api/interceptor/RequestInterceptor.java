@@ -12,6 +12,12 @@ import static org.severinu.demoapi.api.constants.DemoApiConstants.*;
 @Slf4j
 public class RequestInterceptor implements HandlerInterceptor {
 
+    private final IHeadersService headersService;
+
+    public RequestInterceptor(IHeadersService headersService) {
+        this.headersService = headersService;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -19,7 +25,8 @@ public class RequestInterceptor implements HandlerInterceptor {
         for (String header : headers) {
             String headerValue = request.getHeader(header);
             if (headerValue != null) {
-                MDC.put(header, headerValue);
+                //MDC.put(header, headerValue);
+                headersService.set(header, headerValue);
             }
         }
 

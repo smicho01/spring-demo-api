@@ -33,7 +33,8 @@ public class MessageController {
 
     @GetMapping
     public ResponseEntity<String> sendAllMessages(@PathParam("message") String message) {
-        log.info("API /messages/sendAllMessages");
+        log.info("MessageController sendAllMessages()");
+        log.info("[GET] /messages");
         emailSender.send(message);
         smsSender.send(message);
 
