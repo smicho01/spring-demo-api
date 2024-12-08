@@ -1,0 +1,222 @@
+{
+	"info": {
+		"_postman_id": "c68a4ac4-354b-4a52-91d8-ba3089444d95",
+		"name": "Demo API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11729080",
+		"_collection_link": "https://speeding-water-207383.postman.co/workspace/SpringBoot-%2526-Fiddle~4ce5d8d5-6ab1-41fd-a92d-77a69e0846ce/collection/11729080-c68a4ac4-354b-4a52-91d8-ba3089444d95?action=share&source=collection_link&creator=11729080"
+	},
+	"item": [
+		{
+			"name": "PERSON",
+			"item": [
+				{
+					"name": "GET all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9091/api/person",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api",
+								"person"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET one",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9091/api/person/74b45ccb-57d8-4f04-be86-ff9423ea411a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api",
+								"person",
+								"74b45ccb-57d8-4f04-be86-ff9423ea411a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET one with items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9091/api/person/items/ac99dbf1-3f6c-4fc9-801e-aeb666e723da",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9091",
+							"path": [
+								"api",
+								"person",
+								"items",
+								"ac99dbf1-3f6c-4fc9-801e-aeb666e723da"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ITEM",
+			"item": [
+				{
+					"name": "GET all Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9092/api/item",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9092",
+							"path": [
+								"api",
+								"item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET person items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9092/api/item/person/ac99dbf1-3f6c-4fc9-801e-aeb666e723da",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9092",
+							"path": [
+								"api",
+								"item",
+								"person",
+								"ac99dbf1-3f6c-4fc9-801e-aeb666e723da"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MESSAGE",
+			"item": [
+				{
+					"name": "SEND ALL messages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "schema",
+								"value": "DOCUMENTS",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-roles",
+								"value": "read",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/message?message=Ala ma kota",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"message"
+							],
+							"query": [
+								{
+									"key": "message",
+									"value": "Ala ma kota"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET dependencies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "schema",
+								"value": "DOCUMENTS",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-roles",
+								"value": "read",
+								"type": "text"
+							},
+							{
+								"key": "view",
+								"value": "EXTENDED",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/message/dependencies",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"message",
+								"dependencies"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Healthcheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{host}}:{{port}}/healthcheck",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"healthcheck"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
