@@ -13,10 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonView(value = { View.Normal.class })
-public class DocumentsSearchResultsResponse extends SearchResultResponse {
+public class FilesSearchResultResponse extends SearchResultResponse {
 
-    @JsonProperty("documents")
-    private List<String> documents;
+    @JsonProperty("files")
+    private List<String> files;
 
     @JsonProperty("location")
     @JsonView(value = { View.Extended.class})
