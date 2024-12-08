@@ -25,7 +25,9 @@ public class RequestInterceptor implements HandlerInterceptor {
         for (String header : headers) {
             String headerValue = request.getHeader(header);
             if (headerValue != null) {
-                //MDC.put(header, headerValue);
+                //MDC.put(header, headerValue)
+                log.info("Setting MDC value with [key:] {} [value:] {}", header, headerValue);
+                MDC.put(header, headerValue);
                 headersService.set(header, headerValue);
             }
         }
