@@ -2,7 +2,6 @@ package org.severinu.demoapi.interfacesfiddle;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.severinu.demoapi.api.controller.MessageController;
 import org.severinu.demoapi.api.interceptor.IHeadersService;
 import org.severinu.demoapi.api.interceptor.RequestInterceptor;
@@ -201,6 +200,45 @@ class MessageControllerTest {
                 .andExpect(jsonPath("$.files[2]", is("documentId3")))
                 .andDo(result -> {
                     assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                });
+    }
+
+    @Test
+    void testNormalViewHeader() throws Exception {
+        String schemaHeaderValue = "FILES";
+
+        FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
+                .files(getDocumentsList())
+                .type("files")
+                .location("location")
+                .build();
+
+        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(searchResultResponse);
+
+        when(fileOrchestrator.getFiles(anyString()))
+                .thenReturn(searchResultResponse);
+        when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
+                .thenReturn(searchResultResponse);
+        when(fileSchemaInterpreter.convertToJacksonValue(searchResultResponse, "NORMAL"))
+                .thenReturn(mappingJacksonValue);
+
+        when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+        when(headersService.get(VIEW_HEADER)).thenReturn("NORMAL");
+
+        mockMvc.perform(get("/message/dependencies")
+                        .header(SCHEMA_HEADER, schemaHeaderValue)
+                        .header(VIEW_HEADER, "NORMAL")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.type", is("files")))
+                .andExpect(jsonPath("$.location", is("location")))
+                .andExpect(jsonPath("$.files", hasSize(3)))
+                .andExpect(jsonPath("$.files[0]", is("documentId1")))
+                .andExpect(jsonPath("$.files[1]", is("documentId2")))
+                .andExpect(jsonPath("$.files[2]", is("documentId3")))
+                .andDo(result -> {
+                    assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                    assertEquals("NORMAL", MDC.get(VIEW_HEADER));
                 });
     }
 
