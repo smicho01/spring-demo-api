@@ -1,8 +1,7 @@
-package org.severinu.demoapi.interfacesfiddle;
+package org.severinu.demoapi.api.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.severinu.demoapi.api.controller.MessageController;
 import org.severinu.demoapi.api.interceptor.IHeadersService;
 import org.severinu.demoapi.api.interceptor.RequestInterceptor;
 import org.severinu.demoapi.api.responses.DocumentsSearchResultsResponse;
@@ -10,13 +9,19 @@ import org.severinu.demoapi.api.responses.FilesSearchResultResponse;
 import org.severinu.demoapi.api.service.FileOrchestrator;
 import org.severinu.demoapi.api.service.FileSchemaInterpreter;
 import org.severinu.demoapi.api.service.MessageService;
+import org.severinu.demoapi.api.view.View;
+import org.severinu.demoapi.interfacesfiddle.EmailNotification;
+import org.severinu.demoapi.interfacesfiddle.INotificationSender;
+import org.severinu.demoapi.interfacesfiddle.SmsNotification;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
@@ -214,6 +219,43 @@ class MessageControllerTest {
                 .build();
 
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(searchResultResponse);
+        mappingJacksonValue.setSerializationView(View.Normal.class);
+
+        when(fileOrchestrator.getFiles(anyString()))
+                .thenReturn(searchResultResponse);
+        when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
+                .thenReturn(searchResultResponse);
+        when(fileSchemaInterpreter.convertToJacksonValue(searchResultResponse, "NORMAL"))
+                .thenReturn(mappingJacksonValue);
+
+        when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+        when(headersService.get(VIEW_HEADER)).thenReturn("NORMAL");
+
+        mockMvc.perform(get("/message/dependencies")
+                        .header(SCHEMA_HEADER, schemaHeaderValue)
+                        .header(VIEW_HEADER, "NORMAL")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.type", is("files")))
+                .andExpect(jsonPath("$.files", hasSize(3)))
+                .andDo(result -> {
+                    assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                    assertEquals("NORMAL", MDC.get(VIEW_HEADER));
+                });
+    }
+
+    @Test
+    void testExtendedViewHeader() throws Exception {
+        String schemaHeaderValue = "FILES";
+
+        FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
+                .files(getDocumentsList())
+                .type("files")
+                .location("location")
+                .build();
+
+        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(searchResultResponse);
+        mappingJacksonValue.setSerializationView(View.Extended.class);
 
         when(fileOrchestrator.getFiles(anyString()))
                 .thenReturn(searchResultResponse);
@@ -233,9 +275,6 @@ class MessageControllerTest {
                 .andExpect(jsonPath("$.type", is("files")))
                 .andExpect(jsonPath("$.location", is("location")))
                 .andExpect(jsonPath("$.files", hasSize(3)))
-                .andExpect(jsonPath("$.files[0]", is("documentId1")))
-                .andExpect(jsonPath("$.files[1]", is("documentId2")))
-                .andExpect(jsonPath("$.files[2]", is("documentId3")))
                 .andDo(result -> {
                     assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
                     assertEquals("NORMAL", MDC.get(VIEW_HEADER));

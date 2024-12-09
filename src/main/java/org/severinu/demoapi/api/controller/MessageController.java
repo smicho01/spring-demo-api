@@ -65,7 +65,6 @@ public class MessageController {
     @GetMapping("/dependencies")
     public ResponseEntity<MappingJacksonValue> getAllMessagesWithLoadsOfDependencies(@RequestHeader MultiValueMap<String, String> headers) {
         log.info("Headers: {}", headers);
-
         FilesSearchResultResponse searchResult = fileOrchestrator.getFiles(headersService.get(ROLES_HEADER));
         SearchResultResponse metadata = fileSchemaInterpreter.interpretFileMetadata(searchResult, headersService.get(SCHEMA_HEADER));
         MappingJacksonValue searchResultJackson = fileSchemaInterpreter.convertToJacksonValue(metadata, headersService.get(VIEW_HEADER));

@@ -19,7 +19,7 @@ public class DocumentsSearchResultsResponse extends SearchResultResponse {
     private List<String> documents;
 
     @JsonProperty("location")
-    @JsonView(value = { View.Extended.class})
+    @JsonView(value = { View.Extended.class })
     protected String location;
 
     @JsonProperty("type")
