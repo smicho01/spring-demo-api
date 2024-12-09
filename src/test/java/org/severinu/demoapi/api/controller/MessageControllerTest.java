@@ -99,7 +99,7 @@ class MessageControllerTest {
                     //assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
                 });
 
-        String schemaHeaderFromMDC = headersService.get(SCHEMA_HEADER); //MDC.get(SCHEMA_HEADER);
+        String schemaHeaderFromMDC = MDC.get(SCHEMA_HEADER);
         assertEquals(schemaHeaderValue, schemaHeaderFromMDC); // test again because why not :)
 
         verify(headersService).set(SCHEMA_HEADER, schemaHeaderValue);
