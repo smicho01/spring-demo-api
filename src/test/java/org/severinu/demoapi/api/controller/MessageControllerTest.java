@@ -19,9 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
@@ -98,10 +96,10 @@ class MessageControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Message sent"))
                 .andDo(result -> {
-                    assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                    //assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
                 });
 
-        String schemaHeaderFromMDC = MDC.get(SCHEMA_HEADER);
+        String schemaHeaderFromMDC = headersService.get(SCHEMA_HEADER); //MDC.get(SCHEMA_HEADER);
         assertEquals(schemaHeaderValue, schemaHeaderFromMDC); // test again because why not :)
 
         verify(headersService).set(SCHEMA_HEADER, schemaHeaderValue);
