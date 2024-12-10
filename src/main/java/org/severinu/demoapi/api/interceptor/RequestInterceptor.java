@@ -45,5 +45,7 @@ public class RequestInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         log.info("Request after completion: {}",request.getRequestURI());
+        MDC.clear();
+        log.info("MDC cleared");
     }
 }

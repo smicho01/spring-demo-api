@@ -2,6 +2,7 @@ package org.severinu.demoapi.api.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.severinu.demoapi.api.interceptor.IHeadersService;
 import org.severinu.demoapi.api.interceptor.RequestInterceptor;
 import org.severinu.demoapi.api.responses.DocumentsSearchResultsResponse;
@@ -86,197 +87,234 @@ class MessageControllerTest {
 
     @Test
     void testSetHeaders() throws Exception {
-        String schemaHeaderValue = "DOCUMENTS";
+        try (MockedStatic<MDC> mockedMDC = mockStatic(MDC.class)) {
+            String schemaHeaderValue = "DOCUMENTS";
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/message")
-                        .param("message", "Hello World")
-                        .header(SCHEMA_HEADER, schemaHeaderValue)
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string("Message sent"))
-                .andDo(result -> {
-                    //assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
-                });
+            mockedMDC.when(() -> MDC.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
 
-        String schemaHeaderFromMDC = MDC.get(SCHEMA_HEADER);
-        assertEquals(schemaHeaderValue, schemaHeaderFromMDC); // test again because why not :)
+            mockMvc.perform(MockMvcRequestBuilders.get("/message")
+                            .param("message", "Hello World")
+                            .header(SCHEMA_HEADER, schemaHeaderValue)
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("Message sent"))
+                    .andDo(result -> {
+                        assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                    });
 
-        verify(headersService).set(SCHEMA_HEADER, schemaHeaderValue);
-        verify(headersService).get(SCHEMA_HEADER);
+            mockedMDC.verify(() -> MDC.put(SCHEMA_HEADER, schemaHeaderValue));
+
+            String schemaHeaderFromMDC = MDC.get(SCHEMA_HEADER);
+            assertEquals(schemaHeaderValue, schemaHeaderFromMDC); // test again because why not :)
+
+            verify(headersService).set(SCHEMA_HEADER, schemaHeaderValue);
+            verify(headersService).get(SCHEMA_HEADER);
+        }
     }
 
     @Test
     void testGetHeadersInMessageService() throws Exception {
-        String schemaHeaderValue = "FILES";
+        try (MockedStatic<MDC> mockedMDC = mockStatic(MDC.class)) {
+            String schemaHeaderValue = "FILES";
 
-        // Mock MDC behavior
-        doNothing().when(headersService).set(SCHEMA_HEADER, schemaHeaderValue);
-        when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
-        doNothing().when(messageService).doSomething();
-        when(messageService.getSchemaHeader()).thenReturn(schemaHeaderValue);
+            // Mock MDC behavior
+            doNothing().when(headersService).set(SCHEMA_HEADER, schemaHeaderValue);
+            when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+            doNothing().when(messageService).doSomething();
+            when(messageService.getSchemaHeader()).thenReturn(schemaHeaderValue);
 
-        mockMvc.perform(get("/message")
-                        .param("message", "Hello World")
-                        .header(SCHEMA_HEADER, schemaHeaderValue)
-                )
-                .andExpect(status().isOk())
-                .andExpect(content().string("Message sent"))
-                .andDo(result -> {
-                    assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
-                });
+            mockedMDC.when(() -> MDC.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
 
-        verify(headersService).set(SCHEMA_HEADER, schemaHeaderValue);
-        assertEquals(schemaHeaderValue, messageService.getSchemaHeader());
+            mockMvc.perform(get("/message")
+                            .param("message", "Hello World")
+                            .header(SCHEMA_HEADER, schemaHeaderValue)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("Message sent"))
+                    .andDo(result -> {
+                        assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                    });
+
+            mockedMDC.verify(() -> MDC.put(SCHEMA_HEADER, schemaHeaderValue));
+
+            verify(headersService).set(SCHEMA_HEADER, schemaHeaderValue);
+            assertEquals(schemaHeaderValue, messageService.getSchemaHeader());
+        }
     }
 
     @Test
     void testGetAllMessagesWithLoadsOfDependencies_shouldReturnDocuments() throws Exception {
-        String schemaHeaderValue = "DOCUMENTS";
+        try (MockedStatic<MDC> mockedMDC = mockStatic(MDC.class)) {
+            String schemaHeaderValue = "DOCUMENTS";
 
-        FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
-                .files(getDocumentsList())
-                .type("files")
-                .location("location")
-                .build();
+            FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
+                    .files(getDocumentsList())
+                    .type("files")
+                    .location("location")
+                    .build();
 
-        DocumentsSearchResultsResponse documentsSearchResultsResponse = DocumentsSearchResultsResponse.builder()
-                .documents(getDocumentsList())
-                .location("location")
-                .type("documents")
-                .build();
+            DocumentsSearchResultsResponse documentsSearchResultsResponse = DocumentsSearchResultsResponse.builder()
+                    .documents(getDocumentsList())
+                    .location("location")
+                    .type("documents")
+                    .build();
 
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(documentsSearchResultsResponse);
+            MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(documentsSearchResultsResponse);
 
-        when(fileOrchestrator.getFiles(anyString()))
-                .thenReturn(searchResultResponse);
-        when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
-                .thenReturn(documentsSearchResultsResponse);
-        when(fileSchemaInterpreter.convertToJacksonValue(documentsSearchResultsResponse, "EXTENDED"))
-                .thenReturn(mappingJacksonValue);
-        when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+            when(fileOrchestrator.getFiles(anyString()))
+                    .thenReturn(searchResultResponse);
+            when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
+                    .thenReturn(documentsSearchResultsResponse);
+            when(fileSchemaInterpreter.convertToJacksonValue(documentsSearchResultsResponse, "EXTENDED"))
+                    .thenReturn(mappingJacksonValue);
+            when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
 
-        mockMvc.perform(get("/message/dependencies")
-                        .header(SCHEMA_HEADER, schemaHeaderValue)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.type", is("documents")))
-                .andExpect(jsonPath("$.location", is("location")))
-                .andExpect(jsonPath("$.documents", hasSize(3)))
-                .andExpect(jsonPath("$.documents[0]", is("documentId1")))
-                .andExpect(jsonPath("$.documents[1]", is("documentId2")))
-                .andExpect(jsonPath("$.documents[2]", is("documentId3")))
-                .andDo(result -> {
-                    assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
-                });
+            mockedMDC.when(() -> MDC.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+
+            mockMvc.perform(get("/message/dependencies")
+                            .header(SCHEMA_HEADER, schemaHeaderValue)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.type", is("documents")))
+                    .andExpect(jsonPath("$.location", is("location")))
+                    .andExpect(jsonPath("$.documents", hasSize(3)))
+                    .andExpect(jsonPath("$.documents[0]", is("documentId1")))
+                    .andExpect(jsonPath("$.documents[1]", is("documentId2")))
+                    .andExpect(jsonPath("$.documents[2]", is("documentId3")))
+                    .andDo(result -> {
+                        assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                    });
+        }
     }
 
     @Test
     void testGetAllMessagesWithLoadsOfDependencies_shouldReturnFiles() throws Exception {
-        String schemaHeaderValue = "FILES";
+        try (MockedStatic<MDC> mockedMDC = mockStatic(MDC.class)) {
+            String schemaHeaderValue = "FILES";
 
-        FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
-                .files(getDocumentsList())
-                .type("files")
-                .location("location")
-                .build();
+            FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
+                    .files(getDocumentsList())
+                    .type("files")
+                    .location("location")
+                    .build();
 
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(searchResultResponse);
+            MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(searchResultResponse);
 
-        when(fileOrchestrator.getFiles(anyString()))
-                .thenReturn(searchResultResponse);
-        when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
-                .thenReturn(searchResultResponse);
-        when(fileSchemaInterpreter.convertToJacksonValue(searchResultResponse, "EXTENDED"))
-                .thenReturn(mappingJacksonValue);
-        when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+            mockedMDC.when(() -> MDC.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
 
-        mockMvc.perform(get("/message/dependencies")
-                        .header(SCHEMA_HEADER, schemaHeaderValue)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.type", is("files")))
-                .andExpect(jsonPath("$.location", is("location")))
-                .andExpect(jsonPath("$.files", hasSize(3)))
-                .andExpect(jsonPath("$.files[0]", is("documentId1")))
-                .andExpect(jsonPath("$.files[1]", is("documentId2")))
-                .andExpect(jsonPath("$.files[2]", is("documentId3")))
-                .andDo(result -> {
-                    assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
-                });
+            when(fileOrchestrator.getFiles(anyString()))
+                    .thenReturn(searchResultResponse);
+            when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
+                    .thenReturn(searchResultResponse);
+            when(fileSchemaInterpreter.convertToJacksonValue(searchResultResponse, "EXTENDED"))
+                    .thenReturn(mappingJacksonValue);
+            when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+
+            mockMvc.perform(get("/message/dependencies")
+                            .header(SCHEMA_HEADER, schemaHeaderValue)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.type", is("files")))
+                    .andExpect(jsonPath("$.location", is("location")))
+                    .andExpect(jsonPath("$.files", hasSize(3)))
+                    .andExpect(jsonPath("$.files[0]", is("documentId1")))
+                    .andExpect(jsonPath("$.files[1]", is("documentId2")))
+                    .andExpect(jsonPath("$.files[2]", is("documentId3")))
+                    .andDo(result -> {
+                        assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                        mockedMDC.verify(() -> MDC.put(SCHEMA_HEADER, schemaHeaderValue));
+                    });
+        }
     }
 
     @Test
     void testNormalViewHeader() throws Exception {
-        String schemaHeaderValue = "FILES";
+        try (MockedStatic<MDC> mockedMDC = mockStatic(MDC.class)) {
+            String schemaHeaderValue = "FILES";
+            String viewHeaderValue = "NORMAL";
 
-        FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
-                .files(getDocumentsList())
-                .type("files")
-                .location("location")
-                .build();
+            FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
+                    .files(getDocumentsList())
+                    .type("files")
+                    .location("location")
+                    .build();
 
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(searchResultResponse);
-        mappingJacksonValue.setSerializationView(View.Normal.class);
+            MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(searchResultResponse);
+            mappingJacksonValue.setSerializationView(View.Normal.class);
 
-        when(fileOrchestrator.getFiles(anyString()))
-                .thenReturn(searchResultResponse);
-        when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
-                .thenReturn(searchResultResponse);
-        when(fileSchemaInterpreter.convertToJacksonValue(searchResultResponse, "NORMAL"))
-                .thenReturn(mappingJacksonValue);
+            when(fileOrchestrator.getFiles(anyString()))
+                    .thenReturn(searchResultResponse);
+            when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
+                    .thenReturn(searchResultResponse);
+            when(fileSchemaInterpreter.convertToJacksonValue(searchResultResponse, viewHeaderValue))
+                    .thenReturn(mappingJacksonValue);
 
-        when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
-        when(headersService.get(VIEW_HEADER)).thenReturn("NORMAL");
+            when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+            when(headersService.get(VIEW_HEADER)).thenReturn(viewHeaderValue);
 
-        mockMvc.perform(get("/message/dependencies")
-                        .header(SCHEMA_HEADER, schemaHeaderValue)
-                        .header(VIEW_HEADER, "NORMAL")
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.type", is("files")))
-                .andExpect(jsonPath("$.files", hasSize(3)))
-                .andDo(result -> {
-                    assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
-                    assertEquals("NORMAL", MDC.get(VIEW_HEADER));
-                });
+            mockedMDC.when(() -> MDC.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+            mockedMDC.when(() -> MDC.get(VIEW_HEADER)).thenReturn(viewHeaderValue);
+
+            mockMvc.perform(get("/message/dependencies")
+                            .header(SCHEMA_HEADER, schemaHeaderValue)
+                            .header(VIEW_HEADER, viewHeaderValue)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.type", is("files")))
+                    .andExpect(jsonPath("$.files", hasSize(3)))
+                    .andDo(result -> {
+                        assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                        assertEquals(viewHeaderValue, MDC.get(VIEW_HEADER));
+                    });
+            mockedMDC.verify(() -> MDC.put(SCHEMA_HEADER, schemaHeaderValue));
+            mockedMDC.verify(() -> MDC.put(VIEW_HEADER, viewHeaderValue));
+        }
     }
 
     @Test
     void testExtendedViewHeader() throws Exception {
-        String schemaHeaderValue = "FILES";
+        try (MockedStatic<MDC> mockedMDC = mockStatic(MDC.class)) {
+            String schemaHeaderValue = "FILES";
+            String viewHeaderValue = "NORMAL";
 
-        FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
-                .files(getDocumentsList())
-                .type("files")
-                .location("location")
-                .build();
+            FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
+                    .files(getDocumentsList())
+                    .type("files")
+                    .location("location")
+                    .build();
 
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(searchResultResponse);
-        mappingJacksonValue.setSerializationView(View.Extended.class);
+            MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(searchResultResponse);
+            mappingJacksonValue.setSerializationView(View.Extended.class);
 
-        when(fileOrchestrator.getFiles(anyString()))
-                .thenReturn(searchResultResponse);
-        when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
-                .thenReturn(searchResultResponse);
-        when(fileSchemaInterpreter.convertToJacksonValue(searchResultResponse, "NORMAL"))
-                .thenReturn(mappingJacksonValue);
+            mockedMDC.when(() -> MDC.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+            mockedMDC.when(() -> MDC.get(VIEW_HEADER)).thenReturn(viewHeaderValue);
 
-        when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
-        when(headersService.get(VIEW_HEADER)).thenReturn("NORMAL");
+            when(fileOrchestrator.getFiles(anyString()))
+                    .thenReturn(searchResultResponse);
+            when(fileSchemaInterpreter.interpretFileMetadata(searchResultResponse, schemaHeaderValue))
+                    .thenReturn(searchResultResponse);
+            when(fileSchemaInterpreter.convertToJacksonValue(searchResultResponse, viewHeaderValue))
+                    .thenReturn(mappingJacksonValue);
 
-        mockMvc.perform(get("/message/dependencies")
-                        .header(SCHEMA_HEADER, schemaHeaderValue)
-                        .header(VIEW_HEADER, "NORMAL")
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.type", is("files")))
-                .andExpect(jsonPath("$.location", is("location")))
-                .andExpect(jsonPath("$.files", hasSize(3)))
-                .andDo(result -> {
-                    assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
-                    assertEquals("NORMAL", MDC.get(VIEW_HEADER));
-                });
+            when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+            when(headersService.get(VIEW_HEADER)).thenReturn(viewHeaderValue);
+
+            mockMvc.perform(get("/message/dependencies")
+                            .header(SCHEMA_HEADER, schemaHeaderValue)
+                            .header(VIEW_HEADER, viewHeaderValue)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.type", is("files")))
+                    .andExpect(jsonPath("$.location", is("location")))
+                    .andExpect(jsonPath("$.files", hasSize(3)))
+                    .andDo(result -> {
+                        assertEquals(schemaHeaderValue, MDC.get(SCHEMA_HEADER));
+                        assertEquals(viewHeaderValue, MDC.get(VIEW_HEADER));
+                        mockedMDC.verify(() -> MDC.put(SCHEMA_HEADER, schemaHeaderValue));
+                        mockedMDC.verify(() -> MDC.put(VIEW_HEADER, viewHeaderValue));
+                    });
+        }
     }
 
     private static List<String> getDocumentsList() {
