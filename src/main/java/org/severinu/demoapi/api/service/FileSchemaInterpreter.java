@@ -6,13 +6,17 @@ import org.severinu.demoapi.api.responses.DocumentsSearchResultsResponse;
 import org.severinu.demoapi.api.responses.FilesSearchResultResponse;
 import org.severinu.demoapi.api.responses.SearchResultResponse;
 import org.severinu.demoapi.api.view.View;
+import org.severinu.demoapi.utils.Utilities;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.severinu.demoapi.api.constants.DemoApiConstants.SCHEMA_HEADER;
+import static org.severinu.demoapi.api.constants.DemoApiConstants.VIEW_HEADER;
 import static org.severinu.demoapi.api.view.View.EXTENDED;
+import static org.severinu.demoapi.api.view.View.NORMAL;
 
 @Slf4j
 @Service
@@ -31,6 +35,10 @@ public class FileSchemaInterpreter {
         }
 
         return filesSearchResultResponse;
+    }
+
+    public SearchResultResponse interpretFileMetadata(FilesSearchResultResponse filesSearchResultResponse) {
+        return interpretFileMetadata(filesSearchResultResponse, Utilities.getCustomHeader(SCHEMA_HEADER));
     }
 
 
@@ -52,5 +60,10 @@ public class FileSchemaInterpreter {
             log.info("NORMAL view");
         }
         return objectAsJackson;
+    }
+
+
+    public MappingJacksonValue convertToJacksonValue(Object object) {
+        return convertToJacksonValue(object, Utilities.getCustomHeader(VIEW_HEADER));
     }
 }
