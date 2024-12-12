@@ -52,18 +52,18 @@ public class FileSchemaInterpreter {
 
     public MappingJacksonValue convertToJacksonValue(Object object, String view) {
         MappingJacksonValue objectAsJackson = new MappingJacksonValue(object);
-        if ( view != null && view.equals(EXTENDED)){
+        if ( view != null && view.equalsIgnoreCase(EXTENDED)){
             objectAsJackson.setSerializationView(View.Extended.class);
-            log.info("EXTENDED view");
+            log.info("Serialization view: EXTENDED");
         } else {
             objectAsJackson.setSerializationView(View.Normal.class);
-            log.info("NORMAL view");
+            log.info("Serialization view: NORMAL");
         }
         return objectAsJackson;
     }
 
-
     public MappingJacksonValue convertToJacksonValue(Object object) {
-        return convertToJacksonValue(object, Utilities.getCustomHeader(VIEW_HEADER));
+        log.info("Header in convertToJacksonValue(Object object) : {}", Utilities.getCustomHeader(VIEW_HEADER));
+        return convertToJacksonValue(object,  Utilities.getCustomHeader(VIEW_HEADER));
     }
 }

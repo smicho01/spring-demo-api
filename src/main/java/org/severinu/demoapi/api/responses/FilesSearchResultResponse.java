@@ -16,6 +16,7 @@ import java.util.List;
 public class FilesSearchResultResponse extends SearchResultResponse {
 
     @JsonProperty("files")
+    @JsonView(value = { View.Normal.class })
     private List<String> files;
 
     @JsonProperty("location")
@@ -23,5 +24,6 @@ public class FilesSearchResultResponse extends SearchResultResponse {
     protected String location;
 
     @JsonProperty("type")
+    @JsonView(value = { View.Normal.class })
     protected String type = "files";
 }

@@ -148,6 +148,9 @@ class MessageControllerTest {
         try (MockedStatic<MDC> mockedMDC = mockStatic(MDC.class)) {
             String schemaHeaderValue = "DOCUMENTS";
 
+            mockedMDC.when(() -> MDC.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+            mockedMDC.when(() -> MDC.get(VIEW_HEADER)).thenReturn("NORMAL");
+
             FilesSearchResultResponse searchResultResponse = FilesSearchResultResponse.builder()
                     .files(getDocumentsList())
                     .type("files")
@@ -161,6 +164,7 @@ class MessageControllerTest {
                     .build();
 
             MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(documentsSearchResultsResponse);
+            //mappingJacksonValue.setSerializationView(View.EXTENDED.getClass());
 
             when(fileOrchestrator.getFiles(anyString()))
                     .thenReturn(searchResultResponse);
@@ -170,7 +174,7 @@ class MessageControllerTest {
                     .thenReturn(mappingJacksonValue);
             when(headersService.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
 
-            mockedMDC.when(() -> MDC.get(SCHEMA_HEADER)).thenReturn(schemaHeaderValue);
+
 
             mockMvc.perform(get("/message/dependencies")
                             .header(SCHEMA_HEADER, schemaHeaderValue)
