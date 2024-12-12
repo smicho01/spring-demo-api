@@ -35,4 +35,25 @@ public class SqsService {
             // Process message...
         }
     }
+
+    @SqsListener("${cloud.aws.sqs.queue-name}")
+    public void processTask(String message) {
+        System.out.println("Processing task: " + message);
+
+        // Simulate task processing
+        try {
+            Thread.sleep(5000); // Simulate processing time
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Notify via SNS
+        sendCompletionNotification(message);
+    }
+
+    private void sendCompletionNotification(String message) {
+        // Logic to publish a notification to SNS
+        // (e.g., AmazonSNSClient.publish())
+        System.out.println("Task completed: " + message);
+    }
 }

@@ -10,12 +10,16 @@ public class SqsSnSController {
 
     private final SnsService snsService;
 
-    public SqsSnSController(SnsService snsService) {
+    private final SqsService sqsService;
+
+    public SqsSnSController(SnsService snsService, SqsService sqsService) {
         this.snsService = snsService;
+        this.sqsService = sqsService;
     }
 
     @PostMapping
     public void publishMessage() {
         snsService.publishMessage("Ala ma kota", "grupa1");
+        //sqsService.pollMessages();
     }
 }
