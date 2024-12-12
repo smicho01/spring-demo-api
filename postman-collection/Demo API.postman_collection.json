@@ -4,7 +4,7 @@
 		"name": "Demo API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11729080",
-		"_collection_link": "https://speeding-water-207383.postman.co/workspace/SpringBoot-%2526-Fiddle~4ce5d8d5-6ab1-41fd-a92d-77a69e0846ce/collection/11729080-c68a4ac4-354b-4a52-91d8-ba3089444d95?action=share&source=collection_link&creator=11729080"
+		"_collection_link": "https://speeding-water-207383.postman.co/workspace/SpringBoot-%26-Fiddle~4ce5d8d5-6ab1-41fd-a92d-77a69e0846ce/collection/11729080-c68a4ac4-354b-4a52-91d8-ba3089444d95?action=share&source=collection_link&creator=11729080"
 	},
 	"item": [
 		{
@@ -192,6 +192,70 @@
 							"path": [
 								"message",
 								"dependencies"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Attributes",
+			"item": [
+				{
+					"name": "GET attributes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "schema",
+								"value": "DOCUMENTS",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-roles",
+								"value": "read.role",
+								"type": "text"
+							},
+							{
+								"key": "view",
+								"value": "EXTENDED",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/attributes",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"attributes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SNS SQS",
+			"item": [
+				{
+					"name": "Publish message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/snssqs",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"snssqs"
 							]
 						}
 					},
