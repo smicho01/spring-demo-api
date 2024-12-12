@@ -9,6 +9,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.UUID;
+
 import static org.severinu.demoapi.api.constants.DemoApiConstants.*;
 
 @Slf4j
@@ -22,6 +24,12 @@ public class RequestInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        // Create correlation id for the request
+        String correlationId = UUID.randomUUID().toString();
+        MDC.put("correlationId", correlationId);
+        log.info("Correlation id for the request: {}", correlationId);
+
         // List of potential headers to store
         String[] headers = { SCHEMA_HEADER, ROLES_HEADER, VIEW_HEADER };
 

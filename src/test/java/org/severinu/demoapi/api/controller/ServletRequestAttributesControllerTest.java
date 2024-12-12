@@ -7,7 +7,6 @@ import org.severinu.demoapi.api.interceptor.RequestInterceptor;
 import org.severinu.demoapi.api.responses.FilesSearchResultResponse;
 import org.severinu.demoapi.api.service.FileOrchestrator;
 import org.severinu.demoapi.api.service.FileSchemaInterpreter;
-import org.severinu.demoapi.api.view.View;
 import org.severinu.demoapi.utils.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

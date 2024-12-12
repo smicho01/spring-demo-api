@@ -1,25 +1,25 @@
 package org.severinu.demoapi.aws;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/snssqs")
+@RequiredArgsConstructor
 public class SqsSnSController {
 
     private final SnsService snsService;
 
-    private final SqsService sqsService;
-
-    public SqsSnSController(SnsService snsService, SqsService sqsService) {
-        this.snsService = snsService;
-        this.sqsService = sqsService;
-    }
-
     @PostMapping
-    public void publishMessage() {
-        snsService.publishMessage("Ala ma kota", "grupa1");
-        //sqsService.pollMessages();
+    public void publishMessage(@RequestBody MessageContent message) throws JsonProcessingException {
+        message.setCorrelationId(MDC.get("correlationId"));
+        snsService.publishMessageToSNS(message, "grupa1");
     }
 }
