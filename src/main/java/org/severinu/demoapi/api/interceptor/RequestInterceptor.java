@@ -37,7 +37,7 @@ public class RequestInterceptor implements HandlerInterceptor {
         for (String header : headers) {
             String headerValue = request.getHeader(header);
             if (headerValue != null) {
-                log.info("Setting MDC value with [key:] {} [value:] {}", header, headerValue);
+                //log.info("Setting MDC value with [key:] {} [value:] {}", header, headerValue);
                 MDC.put(header, headerValue);
                 headersService.set(header, headerValue);
             }
@@ -56,8 +56,8 @@ public class RequestInterceptor implements HandlerInterceptor {
         }
 
 
-        log.info("Incoming API request: {}",  request.getRequestURI());
-        log.info("Response status: {}",  response.getStatus());
+        //log.info("Incoming API request: {}",  request.getRequestURI());
+       //log.info("Response status: {}",  response.getStatus());
         return true;
     }
 
@@ -68,8 +68,8 @@ public class RequestInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        log.info("Request after completion: {}",request.getRequestURI());
+        //log.info("Request after completion: {}",request.getRequestURI());
         MDC.clear();
-        log.info("MDC cleared");
+        //log.info("MDC cleared");
     }
 }

@@ -15,6 +15,7 @@ public class FileMetadata {
     @Id
     private String id;
     private String fileName;
+    private String ownerName;
     private String contentType;
     private long size;
     private String s3Id;
