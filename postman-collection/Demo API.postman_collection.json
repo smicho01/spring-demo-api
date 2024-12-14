@@ -4,7 +4,7 @@
 		"name": "Demo API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11729080",
-		"_collection_link": "https://speeding-water-207383.postman.co/workspace/SpringBoot-%26-Fiddle~4ce5d8d5-6ab1-41fd-a92d-77a69e0846ce/collection/11729080-c68a4ac4-354b-4a52-91d8-ba3089444d95?action=share&source=collection_link&creator=11729080"
+		"_collection_link": "https://speeding-water-207383.postman.co/workspace/SpringBoot-%2526-Fiddle~4ce5d8d5-6ab1-41fd-a92d-77a69e0846ce/collection/11729080-c68a4ac4-354b-4a52-91d8-ba3089444d95?action=share&source=collection_link&creator=11729080"
 	},
 	"item": [
 		{
@@ -16,14 +16,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9091/api/person",
+							"raw": "http://{{host}}:{{port}}/person",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "9091",
+							"port": "{{port}}",
 							"path": [
-								"api",
 								"person"
 							]
 						}
@@ -36,85 +35,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9091/api/person/74b45ccb-57d8-4f04-be86-ff9423ea411a",
+							"raw": "http://{{host}}:{{port}}/person/1",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "9091",
+							"port": "{{port}}",
 							"path": [
-								"api",
 								"person",
-								"74b45ccb-57d8-4f04-be86-ff9423ea411a"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET one with items",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9091/api/person/items/ac99dbf1-3f6c-4fc9-801e-aeb666e723da",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9091",
-							"path": [
-								"api",
-								"person",
-								"items",
-								"ac99dbf1-3f6c-4fc9-801e-aeb666e723da"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "ITEM",
-			"item": [
-				{
-					"name": "GET all Copy",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9092/api/item",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9092",
-							"path": [
-								"api",
-								"item"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET person items",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:9092/api/item/person/ac99dbf1-3f6c-4fc9-801e-aeb666e723da",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9092",
-							"path": [
-								"api",
-								"item",
-								"person",
-								"ac99dbf1-3f6c-4fc9-801e-aeb666e723da"
+								"1"
 							]
 						}
 					},
@@ -197,7 +126,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"description": "Testowanie Interceptora headerów."
 		},
 		{
 			"name": "Attributes",
@@ -249,7 +179,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"message\": \"Postman 1\"\n}",
+							"raw": "{\n    \"message\": \"Postman 12\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
