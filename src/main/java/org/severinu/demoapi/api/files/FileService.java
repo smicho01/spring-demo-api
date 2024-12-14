@@ -30,6 +30,8 @@ public class FileService {
     private final AmazonS3 amazonS3;
 
     private final TransferManager transferManager;
+    private final FileDBStorageService fileDBStorageService;
+
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
@@ -47,11 +49,12 @@ public class FileService {
     }
 
     private FileBaseResponse completeFileUpload(UploadFileMetadata uploadFileMetadata, MultipartFile multipartFile, String fileId) throws IOException {
-        // TODO: upload metadata to DB
-
         // Upload to S3
         FileS3Identifier fileS3Identifier = storeFile(uploadFileMetadata, multipartFile, fileId);
         log.info("File S3 Identifier: {}", fileS3Identifier);
+
+        // TODO: upload metadata to DB
+        fileDBStorageService.saveFileMetadata(fileS3Identifier, uploadFileMetadata, fileId, multipartFile.getSize());
 
         return FileBaseResponse.builder()
                 .fileId(fileId)

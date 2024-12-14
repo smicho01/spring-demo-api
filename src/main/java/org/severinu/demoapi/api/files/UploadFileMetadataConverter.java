@@ -13,7 +13,6 @@ import java.io.IOException;
 @Slf4j
 public class UploadFileMetadataConverter implements Converter<String, UploadFileMetadata> {
 
-
     private final ObjectMapper objectMapper;
 
     @Override
