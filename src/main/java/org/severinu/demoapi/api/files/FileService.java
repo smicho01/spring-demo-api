@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
@@ -23,32 +24,39 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileService {
 
     private final AmazonS3 amazonS3;
 
-    private final TransferManager transferMaganer;
+    private final TransferManager transferManager;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
 
-    public void uploadFileAndMetadata(UploadFileMetadata uploadFileMetadata, MultipartFile multipartFile) throws TikaException, IOException {
+    public FileBaseResponse uploadFileAndMetadata(UploadFileMetadata uploadFileMetadata, MultipartFile multipartFile) throws TikaException, IOException {
         String fileMediaType = determineMediaType(multipartFile);
-        System.out.println("File Media Type: " + fileMediaType);
         uploadFileMetadata.setFileType(fileMediaType);
 
         String fileId = UUID.randomUUID().toString();
 
-        completeFileUpload(uploadFileMetadata, multipartFile, fileId);
+        FileBaseResponse uploadFileBaseResponse = completeFileUpload(uploadFileMetadata, multipartFile, fileId);
+
+        return uploadFileBaseResponse;
     }
 
-    private void completeFileUpload(UploadFileMetadata uploadFileMetadata, MultipartFile multipartFile, String fileId) throws IOException {
+    private FileBaseResponse completeFileUpload(UploadFileMetadata uploadFileMetadata, MultipartFile multipartFile, String fileId) throws IOException {
         // TODO: upload metadata to DB
 
         // Upload to S3
         FileS3Identifier fileS3Identifier = storeFile(uploadFileMetadata, multipartFile, fileId);
+        log.info("File S3 Identifier: {}", fileS3Identifier);
 
+        return FileBaseResponse.builder()
+                .fileId(fileId)
+                .message(StatusType.STORED.getType())
+                .build();
     }
 
     public FileS3Identifier storeFile(UploadFileMetadata uploadFileMetadata,
@@ -70,7 +78,7 @@ public class FileService {
                 metaData);
 
         try {
-            Upload upload = transferMaganer.upload(putObjectRequest);
+            Upload upload = transferManager.upload(putObjectRequest);
             upload.waitForUploadResult();
             return new FileS3Identifier(putObjectRequest.getBucketName(), putObjectRequest.getKey());
         } catch (InterruptedException e) {

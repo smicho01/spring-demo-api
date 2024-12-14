@@ -1,9 +1,6 @@
 package org.severinu.demoapi.api.files;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,4 +9,12 @@ import lombok.Setter;
 public class FileS3Identifier {
     private String s3BucketName;
     private String s3FileKey;
+
+    @Override
+    public String toString() {
+        return "{" +
+                "s3BucketName='" + s3BucketName + '\'' +
+                ", s3FileKey='" + s3FileKey + '\'' +
+                '}';
+    }
 }
