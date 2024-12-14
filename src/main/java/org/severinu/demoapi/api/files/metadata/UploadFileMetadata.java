@@ -14,9 +14,12 @@ public class UploadFileMetadata {
     private String fileName;
 
     @JsonProperty
-    private String ownerName;
+    private String ownerId;
 
     @JsonProperty
     private String fileType;
+
+    @JsonProperty
+    private String applicationId;
 
 }

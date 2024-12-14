@@ -17,12 +17,13 @@ public class FileMetadata {
     private String id;
     private String fileId;
     private String fileName;
-    private String ownerName;
+    private String ownerId;
     private String contentType;
     private long size;
     private String s3Id;
     private LocalDateTime uploadTime;
     private String s3bucketName;
     private String s3Key;
+    private String applicationId;
 
 }

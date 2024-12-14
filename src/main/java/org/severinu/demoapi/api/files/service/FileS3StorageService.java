@@ -1,6 +1,5 @@
 package org.severinu.demoapi.api.files.service;
 
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
@@ -53,7 +52,8 @@ public class FileS3StorageService {
 
     private ObjectMetadata buildObjectMetadata(ObjectMetadata objectMetadata, UploadFileMetadata uploadFileMetadata) {
         objectMetadata.addUserMetadata("filename", uploadFileMetadata.getFileName());
-        objectMetadata.addUserMetadata("ownerName", uploadFileMetadata.getOwnerName());
+        objectMetadata.addUserMetadata("ownerId", uploadFileMetadata.getOwnerId());
+        objectMetadata.addUserMetadata("applicationId", uploadFileMetadata.getApplicationId());
         objectMetadata.addUserMetadata("happy", "puppy");
         return objectMetadata;
     }

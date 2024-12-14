@@ -21,12 +21,13 @@ public class FileDBStorageService {
         FileMetadata fileMetadata = new FileMetadata();
         fileMetadata.setFileId(fileId);
         fileMetadata.setFileName(uploadFileMetadata.getFileName());
-        fileMetadata.setOwnerName(uploadFileMetadata.getOwnerName());
+        fileMetadata.setOwnerId(uploadFileMetadata.getOwnerId());
         fileMetadata.setContentType(uploadFileMetadata.getFileType());
         fileMetadata.setSize(size);
         fileMetadata.setUploadTime(LocalDateTime.now());
         fileMetadata.setS3bucketName(fileS3Identifier.getS3BucketName());
         fileMetadata.setS3Key(fileS3Identifier.getS3FileKey());
+        fileMetadata.setApplicationId(uploadFileMetadata.getApplicationId());
 
         fileMetadataRepository.save(fileMetadata);
     }
