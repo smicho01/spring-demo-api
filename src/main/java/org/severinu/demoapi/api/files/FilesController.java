@@ -2,6 +2,10 @@ package org.severinu.demoapi.api.files;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.tika.exception.TikaException;
+import org.severinu.demoapi.api.files.metadata.UploadFileMetadata;
+import org.severinu.demoapi.api.files.response.BaseResponse;
+import org.severinu.demoapi.api.files.response.FileBaseResponse;
+import org.severinu.demoapi.api.files.service.FileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

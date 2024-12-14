@@ -1,4 +1,4 @@
-package org.severinu.demoapi.api.files;
+package org.severinu.demoapi.api.files.metadata;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

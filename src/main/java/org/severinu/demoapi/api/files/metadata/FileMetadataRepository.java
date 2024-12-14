@@ -1,4 +1,4 @@
-package org.severinu.demoapi.api.files;
+package org.severinu.demoapi.api.files.metadata;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

@@ -1,7 +1,11 @@
-package org.severinu.demoapi.api.files;
+package org.severinu.demoapi.api.files.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.severinu.demoapi.api.files.FileS3Identifier;
+import org.severinu.demoapi.api.files.metadata.FileMetadata;
+import org.severinu.demoapi.api.files.metadata.FileMetadataRepository;
+import org.severinu.demoapi.api.files.metadata.UploadFileMetadata;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

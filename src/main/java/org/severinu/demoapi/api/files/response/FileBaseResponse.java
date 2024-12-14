@@ -1,10 +1,8 @@
-package org.severinu.demoapi.api.files;
+package org.severinu.demoapi.api.files.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.json.JSONObject;
-
-import java.util.Base64;
 
 @Getter
 @Setter
@@ -26,6 +24,6 @@ public class FileBaseResponse extends BaseResponse  {
         JSONObject metadata = new JSONObject();
         metadata.put("fileId", fileId);
         metadata.put("message", message);
-        return message.toString();
+        return message;
     }
 }
