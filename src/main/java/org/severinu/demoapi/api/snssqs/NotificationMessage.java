@@ -1,4 +1,4 @@
-package org.severinu.demoapi.aws;
+package org.severinu.demoapi.api.snssqs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
