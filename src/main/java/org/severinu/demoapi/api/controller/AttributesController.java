@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/attributes")
 @Slf4j
 @RequiredArgsConstructor
-public class ServletRequestAttributesController {
+public class AttributesController {
 
     private final FileSchemaInterpreter fileSchemaInterpreter;
     private final FileOrchestrator fileOrchestrator;
